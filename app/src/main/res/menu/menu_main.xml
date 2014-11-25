@@ -9,7 +9,7 @@
 
     <item android:id="@+id/action_logout"
         android:title="@string/menu_logout_label"
-        android:icon="@drawable/logout23"
+        android:icon="@drawable/ic_action_name"
         android:orderInCategory="100"
         android:showAsAction="always" />
 </menu>

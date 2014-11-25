@@ -488,7 +488,7 @@ class ExpandableListAdapter extends BaseExpandableListAdapter {
         ImageView imgView = (ImageView) convertView.findViewById(R.id.menuListImage);
 
         String fecha = childText.substring(9, 20);
-        String grado = childText.substring(63);
+        String grado = childText.substring(70);
 
 
 

@@ -59,7 +59,7 @@ public class MainMapFragment extends Fragment {
 
     MapView mMapView;
     private GoogleMap googleMap;
-    private static String JsonURL = "http://starcrash.hostinazo.com/finalweb/maps.php";
+    private static String JsonURL = "http://www.starcrash.esy.es/finalweb/maps.php";
     protected String TAG = MainActivity.class.getSimpleName();
     protected static Context mContext;
     protected JSONObject mData;
@@ -185,7 +185,7 @@ public class MainMapFragment extends Fragment {
 
                 CameraPosition cameraPosition = new CameraPosition.Builder()
                         .target(a)    // Sets the center of the map to Mountain View
-                        .zoom(14)                   // Sets the zoom
+                        .zoom(15)                   // Sets the zoom
                         //.bearing(90)                // Sets the orientation of the camera to east
                         .tilt(30)                   // Sets the tilt of the camera to 30 degrees
                         .build();                   // Creates a CameraPosition from the builder
@@ -238,7 +238,7 @@ public class MainMapFragment extends Fragment {
             int responseCode = -1;
             JSONObject jsonResponse = null;
             try {
-                URL blogFeedUsr = new URL("c");
+                URL blogFeedUsr = new URL("http://www.starcrash.esy.es/finalweb/maps.php");
                 HttpURLConnection connection = (HttpURLConnection) blogFeedUsr
                         .openConnection();
                 connection.connect();
@@ -256,7 +256,7 @@ public class MainMapFragment extends Fragment {
                         });
 
                         jsonResponse = new JSONObject(
-                                readUrl("http://starcrash.hostinazo.com/finalweb/maps.php"));
+                                readUrl("http://www.starcrash.esy.es/finalweb/maps.php"));
 
                     } catch (JSONException e) {
                         e.printStackTrace();
