@@ -32,6 +32,8 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.parse.ParseObject;
+import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
 
 
@@ -48,6 +50,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Date;
 
 /**
  * Created by Jose on 22/11/2014.
@@ -61,6 +64,7 @@ public class MainMapFragment extends Fragment {
     protected static Context mContext;
     protected JSONObject mData;
     protected MarkerOptions myPosition;
+    static JSONArray globalJSON = null;
 
     // Acquire a reference to the system Location Manager
 
@@ -106,25 +110,52 @@ public class MainMapFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         // The 'which' argument contains the index position
                         // of the selected item
+                        ParseUser currentUser = ParseUser.getCurrentUser();
+                        String currentUserName = currentUser.getUsername();
+                        String nivel = "";
+                        if (currentUserName == null){
+                            currentUserName = ParseTwitterUtils.getTwitter().getScreenName();
+                        }
+                        Date date = new Date();
 
                         if (which == 0){
                             googleMap.addMarker(new MarkerOptions()
                                     .position(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()))
                                     .title("Nuevo reporte").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)) );
+                            nivel = "Muy Grave";
+
                         }else if (which == 1){
                             googleMap.addMarker(new MarkerOptions()
                                     .position(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()))
                                     .title("Nuevo reporte").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)) );
-                        }else{
+                            nivel = "Grave";
+
+                        }else if (which == 2){
                             googleMap.addMarker(new MarkerOptions()
                                     .position(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()))
                                     .title("Nuevo reporte").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)) );
+                            nivel = "Leve";
+
                         }
+
+                        ParseObject puntoMap = new ParseObject("maps");
+                        puntoMap.put("usuario",currentUserName);
+                        puntoMap.put("lat",String.valueOf(lastKnownLocation.getLatitude()));
+                        puntoMap.put("long",String.valueOf(lastKnownLocation.getLongitude()));
+                        puntoMap.put("nivel", nivel);
+                        puntoMap.put("fecha", date);
+                        puntoMap.saveInBackground();
 
                     }
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+
+
+
+
+
+
             }
         });
 
@@ -132,6 +163,7 @@ public class MainMapFragment extends Fragment {
             GetDataTask getDataTask = new GetDataTask();
             getDataTask.execute();
         }
+
 
 
 
@@ -158,6 +190,7 @@ public class MainMapFragment extends Fragment {
                         .tilt(30)                   // Sets the tilt of the camera to 30 degrees
                         .build();                   // Creates a CameraPosition from the builder
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition),2000,null);
+                googleMap.setMyLocationEnabled(true);
             }
 
             public void onStatusChanged(String provider, int status, Bundle extras) {}
@@ -205,7 +238,7 @@ public class MainMapFragment extends Fragment {
             int responseCode = -1;
             JSONObject jsonResponse = null;
             try {
-                URL blogFeedUsr = new URL("http://starcrash.hostinazo.com/finalweb/maps.php");
+                URL blogFeedUsr = new URL("c");
                 HttpURLConnection connection = (HttpURLConnection) blogFeedUsr
                         .openConnection();
                 connection.connect();
@@ -263,6 +296,7 @@ public class MainMapFragment extends Fragment {
         } else {
             try {
                 JSONArray jsonPosts = mData.getJSONArray("incidentes");
+                globalJSON = jsonPosts;
 
                 for (int i = 0;i<jsonPosts.length() ;i++){
 
